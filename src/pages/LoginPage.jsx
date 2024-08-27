@@ -36,7 +36,7 @@ function LoginPage() {
         setToken(res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user));
         localStorage.setItem("token", res.data.token);
-        nav("/");
+        nav("/profile");
       }
     } catch (err) {
       console.error("Auth error CATCH ERROR loginpage 41:", err);

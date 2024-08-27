@@ -1,11 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.svg";
 import mainStore from "../store/mainStore";
 import { useState } from "react";
 
 function Toolbar() {
-  const { user } = mainStore();
+  const { user, setUser, setToken } = mainStore();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const nav = useNavigate();
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -15,8 +16,16 @@ function Toolbar() {
     setIsDrawerOpen(false);
   };
 
+  function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setToken("");
+    setUser(null);
+    nav("/");
+  }
+
   return (
-    <nav className="bg-white border-gray-200 dark:bg-gray-900">
+    <nav className="bg-white border-gray-200 dark:bg-gray-900 relative">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src={logo} className="h-8" alt="Flowbite Logo" />
@@ -24,26 +33,75 @@ function Toolbar() {
             ChatMe
           </span>
         </a>
-        <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+        <div
+          className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+          id="navbar-user"
+        >
+          <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+            <li>
+              <Link
+                to="/home"
+                className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/all-users"
+                className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
+              >
+                All users
+              </Link>
+            </li>
+          </ul>
+        </div>
+        <div className="flex items-center gap-3 md:order-2">
           <div className="hidden md:flex gap-3">
             {!user && <Link to="/login">Login</Link>}
             {!user && <Link to="/register">Register</Link>}
           </div>
           {user && (
-            <div className="flex items-center gap-3 mr-10 ">
+            <div className="flex items-center gap-3">
               <span className="block text-sm text-gray-900 dark:text-white">
                 {user.username}
               </span>
 
-              <img
-                className="w-8 h-8 rounded-full"
-                src={user.image}
-                alt="user photo"
-              />
+              <div className="dropdown dropdown-end">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn btn-ghost btn-circle avatar"
+                >
+                  <div className="rounded-full border-2 border-blue-400">
+                    <img
+                      className="w-8 h-8 rounded-full"
+                      src={user.image}
+                      alt="user photo"
+                    />
+                  </div>
+                </div>
+                <ul
+                  tabIndex={0}
+                  className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+                >
+                  <li>
+                    <Link to={"/profile"} className="justify-between">
+                      Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <a>Settings</a>
+                  </li>
+                  <li>
+                    <div onClick={logout}>Logout</div>
+                  </li>
+                </ul>
+              </div>
             </div>
           )}
           {/* SMALL SCREEN NAV LINKS */}
-          <div className="md:hidden drawer drawer-end z-10">
+          <div className="md:hidden drawer drawer-end z-10 w-5">
             <input
               id="my-drawer-4"
               type="checkbox"
@@ -53,7 +111,7 @@ function Toolbar() {
             />
             <label
               htmlFor="my-drawer-4"
-              className="cursor-pointer drawer-button"
+              className="cursor-pointer drawer-button hover:text-blue-500 transition-all"
             >
               <svg
                 className="w-5 h-5"
@@ -110,32 +168,22 @@ function Toolbar() {
                     </li>
                   </div>
                 ) : (
-                  <li>
-                    <Link to="/" onClick={closeDrawer}>
-                      Home
-                    </Link>
-                  </li>
+                  <>
+                    <li>
+                      <Link to="/home" onClick={closeDrawer}>
+                        Home
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/all-users" onClick={closeDrawer}>
+                        All users
+                      </Link>
+                    </li>
+                  </>
                 )}
               </ul>
             </div>
           </div>
-        </div>
-        {/* LARGE SCREEN NAV LINKS */}
-        <div
-          className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
-          id="navbar-user"
-        >
-          <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
-                aria-current="page"
-              >
-                Home
-              </a>
-            </li>
-          </ul>
         </div>
       </div>
     </nav>
