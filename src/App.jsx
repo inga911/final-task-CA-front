@@ -7,6 +7,9 @@ import IndexPage from "./pages/IndexPage";
 import ProfilePage from "./pages/ProfilePage";
 import AllUsersPage from "./pages/AllUsersPage";
 import GetUserPage from "./pages/GetUserPage";
+import ChatPage from "./pages/ChatPage";
+import GroupChat from "./components/GroupChat";
+import ConversationsPage from "./pages/conversationsPage";
 
 function App() {
   return (
@@ -16,10 +19,13 @@ function App() {
         <Routes>
           <Route element={<LoginPage />} path="/login" />
           <Route element={<RegisterPage />} path="/register" />
-          <Route element={<IndexPage />} path="/home" />
+          <Route element={<IndexPage />} path="/" />
           <Route element={<ProfilePage />} path="/profile" />
           <Route element={<AllUsersPage />} path="/all-users" />
           <Route element={<GetUserPage />} path="/user/:username" />
+          <Route element={<ChatPage />} path="/chat/:username" />
+          <Route element={<GroupChat />} path="/group-chat/:room" />
+          <Route element={<ConversationsPage />} path="/conversations" />
         </Routes>
       </BrowserRouter>
     </div>
